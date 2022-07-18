@@ -1,6 +1,8 @@
 ---
 title: "Radiance obs experiments"
-output: html_document
+output:
+  html_document:
+    self_contained: no
 ---
 
 ```{r setup, include=FALSE}
