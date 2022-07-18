@@ -15,9 +15,11 @@ if (exp %in% c("E10_long", "EG3_long")) {
 
 ## Radiances -------------------------------------------------------------------
 
-satinfo <- fread("~/comGSIv3.7_EnKFv1.3/fix/global_satinfo.txt") %>%
+satinfo <- fread("/glade/u/home/pcorrales/comGSIv3.7_EnKFv1.3/fix/global_satinfo.txt") %>%
   .[iuse > 0] %>%
-  setnames(c("!sensor/instr/sat", "chan"), c("sensor", "channel"))
+   setnames(c("!sensor/instr/sat", "chan"), c("sensor", "channel"))
+
+print("Reading radiance diag files")
 
 files <- Sys.glob(paste0(basedir, exp, "/ANA/*/diagfiles/asim*ensmean"))
 
@@ -45,7 +47,7 @@ diag_rad_mean %>%
   geom_point(aes(color = sensor)) +
   scale_color_viridis_d(labels = toupper) +
   scale_y_log10() +
-  scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
+  scale_x_datetime(date_breaks = "1 days", date_label = "%d", expand = c(0,0)) +
   labs(x = "Day in November",
        y = "# obs",
        title = "Radiances",
@@ -53,12 +55,11 @@ diag_rad_mean %>%
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggsave(paste0("n_", exp, "_rad.png"), bg = "white")
+ggsave(paste0("n_", exp, "_rad.png"), bg = "white", width = 4, height = 4)
 
 sensors <- unique(diag_rad_mean$sensor)
 
 for (s in sensors) {
-  print(s)
 
   diag_rad_mean %>%
     .[sensor == s] %>%
@@ -66,7 +67,7 @@ for (s in sensors) {
     ggplot(aes(date, value)) +
     geom_hline(yintercept = 0, color = "grey80") +
     geom_line(aes(color = variable)) +
-    scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
+    scale_x_datetime(date_breaks = "1 days", date_label = "%d", expand = c(0,0)) +
     facet_wrap(vars(channel)) +
     labs(x = "Day in November",
          color = NULL,
@@ -74,13 +75,15 @@ for (s in sensors) {
          subtitle = paste0("Experiment: ", exp)) +
     theme_minimal()
 
-  ggsave(paste0("omb_", exp, "_", s, ".png"), bg = "white")
+  ggsave(paste0("omb_", exp, "_", s, ".png"), bg = "white", width = 4, height = 4)
 }
 
 # write_rds(diag_rad_mean, here::here("analysis/data/derived_data/diag_rad_mean_E10_long_all.rds"))
 
 }
 ## Convencional  -------------------------------------------------------------------
+
+print("Reading conventional diag files")
 
 files <- Sys.glob(paste0(basedir, exp, "/ANA/*/diagfiles/asim*ensmean"))
 
@@ -102,7 +105,7 @@ diag_conv_mean %>%
   .[, count := sum(count), by = .(var, date)] %>%
   ggplot(aes(date, count)) +
   geom_line(aes(color = var)) +
-  scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
+  scale_x_datetime(date_breaks = "1 days", date_label = "%d", expand = c(0,0)) +
   labs(x = "Day in November",
        y = "# obs",
        color = "variable",
@@ -111,7 +114,7 @@ diag_conv_mean %>%
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggsave(paste0("n_", exp, "_conv.png"), bg = "white")
+ggsave(paste0("n_", exp, "_conv.png"), bg = "white", width = 4, height = 4)
 
 vars <- unique(diag_conv_mean$var)
 
@@ -119,13 +122,13 @@ for (v in vars) {
 
 
   diag_conv_mean %>%
-    .[var == v & !(type %in% c(130, 180, 230, 280, 243))] %>%
+    .[var == v & type %in% c(120, 181, 187, 220, 281, 287)] %>%
   # .[, count := sum(count), by = .(var, date)] %>%
   melt(id.vars = c("type", "date"), measure.vars = c("mean_om", "sd_om")) %>%
   ggplot(aes(date, value)) +
     geom_hline(yintercept = 0, color = "grey80") +
   geom_line(aes(color = variable)) +
-  scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
+  scale_x_datetime(date_breaks = "1 days", date_label = "%d", expand = c(0,0)) +
   facet_wrap(vars(type), scales = "free_y") +
   labs(x = "Day in November",
        y = "# obs",
@@ -135,7 +138,7 @@ for (v in vars) {
   theme_minimal() +
   theme(legend.position = "bottom")
 
-  ggsave(paste0("omb_", exp, "_", v, ".png"), bg = "white")
+  ggsave(paste0("omb_", exp, "_", v, ".png"), bg = "white", width = 4, height = 4)
 }
 
 # write_rds(diag_conv_mean, here::here("analysis/data/derived_data/diag_conv_mean_E10_long_all.rds"))
