@@ -1,0 +1,46 @@
+---
+title: "Radiance obs experiments"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Number of observations assimilated {.tabset}
+
+### Conventional
+
+| CTRL                                 | ABI                                   | POL+ABI                               |
+|--------------------------------------|---------------------------------------|---------------------------------------|
+| ![](n_E6_long_conv.png){width="100%"} | ![](n_EG3_long_conv.png){width="100%"} | ![](n_E10_long_conv.png){width="100%"} |
+
+
+### Radiances
+
+| ABI                                   | POL+ABI                               |
+|---------------------------------------|---------------------------------------|
+| ![](n_EG3_long_rad.png){width="100%"} | ![](n_E10_long_rad.png){width="100%"} |
+
+
+## OmB mean {.tabset}
+
+### Conventional 
+
+* 120/220: radiosonde observations
+* 181,187/281,287: surface weather stations
+
+|Var | CTRL                                 | ABI                                   | POL+ABI                               |
+|----|--------------------------------------|---------------------------------------|---------------------------------------|
+|t   | ![](omb_E6_long_t.png){width="100%"} | ![](omb_EG3_long_t.png){width="100%"} | ![](omb_E10_long_t.png){width="100%"} |
+|q   | ![](omb_E6_long_q.png){width="100%"} | ![](omb_EG3_long_q.png){width="100%"} | ![](omb_E10_long_q.png){width="100%"} |
+|u   | ![](omb_E6_long_u.png){width="100%"} | ![](omb_EG3_long_u.png){width="100%"} | ![](omb_E10_long_u.png){width="100%"} |
+|v   | ![](omb_E6_long_v.png){width="100%"} | ![](omb_EG3_long_v.png){width="100%"} | ![](omb_E10_long_v.png){width="100%"} |
+
+### Radiances (only ABI)
+
+
+| ABI                                   | POL+ABI                               |
+|---------------------------------------|---------------------------------------|
+| ![](omb_EG3_long_abi_g16.png){width="100%"} | ![](omb_E10_long_abi_g16.png){width="100%"} |
