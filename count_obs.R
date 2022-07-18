@@ -60,6 +60,7 @@ sensors <- unique(diag_rad_mean$sensor)
 for (s in sensors) {
   print(s)
 
+  if (s == "abi_g16") {
   diag_rad_mean %>%
     .[sensor == s] %>%
     melt(id.vars = c("channel", "date"), measure.vars = c("mean_om", "sd_om")) %>%
@@ -68,13 +69,35 @@ for (s in sensors) {
     geom_line(aes(color = variable)) +
     scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
     facet_wrap(vars(channel)) +
+    coord_cartesian(ylim = c(-0.2, 1.2)) +
     labs(x = "Day in November",
          color = NULL,
          title = paste0("Sensor: ", s),
          subtitle = paste0("Experiment: ", exp)) +
-    theme_minimal()
+    theme_minimal() +
+    theme(legend.position = "bottom")
 
   ggsave(paste0("omb_", exp, "_", s, ".png"), bg = "white")
+  
+  } else {
+    diag_rad_mean %>%
+      .[sensor == s] %>%
+      melt(id.vars = c("channel", "date"), measure.vars = c("mean_om", "sd_om")) %>%
+      ggplot(aes(date, value)) +
+      geom_hline(yintercept = 0, color = "grey80") +
+      geom_line(aes(color = variable)) +
+      scale_x_datetime(date_breaks = "2 days", date_label = "%d", expand = c(0,0)) +
+      facet_wrap(vars(channel)) +
+      labs(x = "Day in November",
+           color = NULL,
+           title = paste0("Sensor: ", s),
+           subtitle = paste0("Experiment: ", exp)) +
+      theme_minimal() +
+      theme(legend.position = "bottom")
+    
+    ggsave(paste0("omb_", exp, "_", s, ".png"), bg = "white")
+    
+  }
 }
 
 # write_rds(diag_rad_mean, here::here("analysis/data/derived_data/diag_rad_mean_E10_long_all.rds"))
